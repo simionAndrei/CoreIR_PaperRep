@@ -1,0 +1,2 @@
+pip install vaderSentiment
+conda install -c anaconda nltk 
