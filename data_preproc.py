@@ -1,6 +1,6 @@
+from collections import Counter
 import numpy as np
 import itertools
-from collections import Counter
 import json
 import random
 

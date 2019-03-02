@@ -1,115 +1,118 @@
-import json
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize 
-from nltk.stem import PorterStemmer
-import string
+from nltk.corpus import opinion_lexicon, stopwords
+from nltk.stem.snowball import SnowballStemmer
+from nltk.tokenize import word_tokenize
 
-def getStructuralFeatures(utterance, startingUser, numUtterances):
-    "Returns a vector with the structural features of an utterance."
-    sentence = utterance["utterance"]
-    # Stopword removal
-    stop = set(stopwords.words('english'))
-    wordTokens = word_tokenize(sentence) # remove punctuation
-    filteredSentence = [w for w in wordTokens if not w in stop] 
-    
-    # Calculate features
-    pos = getAbsolutePosition(utterance);
-    posNorm = getNormalizedPosition(utterance, numUtterances);
-    numWords = getNumWords(filteredSentence);
-    numWordsUnique = getNumWordsUnique(filteredSentence)
-    starter = isStarter(utterance, startingUser)
-    return [pos] + [posNorm] + [numWords] + numWordsUnique + [starter];
+import pandas as pd
+from tqdm import tqdm
 
-def isStarter(utterance, startingUser):
-    "Returns true if the sender of the utterance is the starting user of the dialog."
-    if startingUser == utterance["user_id"]:
-        return True
-    return False
 
-def getNumWords(filteredSentence):
-    "Returns the number of words of a sentence after stopword removal."
-    return len(filteredSentence)
+from abc import ABC, abstractmethod
+class AbstractFeatures(ABC):
 
-def getNumWordsUnique(filteredSentence):
-    "Returns the number of unique words in a sentence after stopword removal\
-    and the number of unique words in a sentence after stemming."
-    porterS = PorterStemmer()
-    filteredSet = set(filteredSentence)
-    stemmedSet = set(list([porterS.stem(filteredWord) for filteredWord in list(filteredSet)]))
-    return [len(filteredSet), len(stemmedSet)]
+  def __init__(self, logger):
+    self.logger = logger
 
-def getAbsolutePosition(utterance):
-    "Returns the absolute position of an utterance within a dialog."
-    return utterance['utterance_pos'];
+  @abstractmethod
+  def compute_features(self, dialog_dict):
+    pass
 
-def getNormalizedPosition(utterance, numUtterances):
-    "Returns the normalized position of an utterance wtihin a dialog."
-    return utterance['utterance_pos'] / numUtterances;
 
-def getSentimentFeatures(utterance):
-    "Returns sentiment feature vector for an utterance dictionary."
-    sentence = utterance["utterance"]
-    
-    # Compute features
-    thank = containsThank(sentence);
-    exPoint = containsExclamationPoint(sentence);
-    feedback = containsFeedback(sentence);
-    vader = getVaderSentimentScores(sentence);
-    posNeg = getNumPosNegWords(sentence);
-    return [thank] + [exPoint] + [feedback] + vader + posNeg;
 
-def getVaderSentimentScores(sentence):
-    "Returns vector with VADER sentiment scores: negative, neutral, positive."
-    analyzer = SentimentIntensityAnalyzer()
-    vs = analyzer.polarity_scores(sentence)
-    return [vs["neg"], vs["neu"], vs["pos"]]
+class SentimentFeatures(AbstractFeatures):
 
-def containsExclamationPoint(sentence):
-    "Returns true if an utterance contains an exclamation point."
-    if "!" in sentence:
-        return True
-    return False
-    
-def containsThank(sentence):
-    "Returns true if an utterance contains 'thank'."
-    if "thank" in sentence:
-        return True
-    return False
-    
-def containsFeedback(sentence):
-    "Returns true if an utterance contains 'does not' or 'did not'."
-    if "does not" in sentence or "did not" in sentence:
-        return True
-    return False
-    
-def getNumPosNegWords(sentence):
-    "Returns number of positive and negative words in utterance."
-    posFile = open("C:/Users/nele2/Documents/IR/IR Core Project/positive-words.txt").read();
-    negFile = open("C:/Users/nele2/Documents/IR/IR Core Project/negative-words.txt").read();
-    numPos = 0;
-    numNeg = 0;
-    
-    table = str.maketrans(dict.fromkeys(string.punctuation))
-    sentence = sentence.translate(table)  
-    for word in sentence.split():
-        if word in posFile:
-            numPos += 1;
-        elif word in negFile:
-            numNeg += 1;
-    return [numPos, numNeg];
+  def __init__(self, logger):
+    super().__init__(logger)
 
-with open('C:/Users/nele2/Documents/IR/IR Core Project/MSDialog-Intent.json') as json_file:  
-    data = json.load(json_file)
+  def _get_feature_per_sentence(self, dialog_part):
+    sentence = dialog_part['utterance']
 
-for dialogID in data.keys():
-    startingUtterance = data[dialogID]["utterances"][0]
-    startingUser = startingUtterance["user_id"] # User who starts the dialog
-    numUtterances = len(data[dialogID]["utterances"]) # number of utterances in dialog
-    for dialogPartID in data[dialogID]["utterances"]:
-        
-        sentiment = getSentimentFeatures(dialogPartID)
-        structural = getStructuralFeatures(dialogPartID, startingUser, numUtterances)
-        print("Sentiment:", sentiment)
-        print("Structural:", structural)
-    
+    vader_analyzer = SentimentIntensityAnalyzer()
+    sentiment_scores = vader_analyzer.polarity_scores(sentence)
+
+    has_thank = "thank" in sentence.lower()
+    has_exclamation = "!" in sentence
+    has_feedback = "did not" in sentence.lower() or "does not" in sentence.lower()
+    pos_opinion_count = [word for word in word_tokenize(sentence) if word in opinion_lexicon.positive()]
+    neg_opinion_count = [word for word in word_tokenize(sentence) if word in opinion_lexicon.negative()]
+
+    return [has_thank, has_exclamation, has_feedback, 
+            sentiment_scores['neg'], sentiment_scores['neu'], sentiment_scores['pos'],
+            pos_opinion_count, neg_opinion_count]
+
+
+  def compute_features(self, dialog_dict):
+
+    self.logger.log("Start computing sentiment features...")
+    sentiment_features = []
+    for _, dialog in tqdm(dialog_dict.items()):
+      for dialog_part in dialog['utterances']:
+        crt_feats = self._get_feature_per_sentence(dialog_part)
+        structural_features.append(crt_feats)
+
+    colnames = ["Thank", "Exclamation_Mark", "Feedback", 
+                "Sentiment_Scores_NEG", "Sentiment_Scores_NEU", "Sentiment_Scores_POS",
+                "Opinion_Lexicon_POS", "Opinion_Lexicon_NEG"]
+    self.logger.log("Finished computing sentiment features")
+
+    return pd.DataFrame(sentiment_features, columns = colnames)
+
+
+
+class StructuralFeatures(AbstractFeatures):
+
+  def __init__(self, logger):
+    super().__init__(logger)
+
+
+  def _get_feature_per_sentence(self, dialog_part, dialog_starter_id, num_dialog_lines):
+    sentence = dialog_part['utterance']
+    true_words = [word for word in word_tokenize(sentence) if word not in stopwords.words('english')]
+
+    stemmer = SnowballStemmer('english')
+    true_stemmed_words = [stemmer.stem(word) for word in true_words]
+
+    pos_in_dialog = dialog_part['utterance_pos']
+    norm_pos_in_dialog = pos_in_dialog / num_dialog_lines
+    num_words = len(true_words)
+    num_unique_words = len(set(true_words))
+    num_unique_words_after_stemming = len(set(true_stemmed_words))
+    is_starter = dialog_part['user_id'] == dialog_starter_id
+
+    return [pos_in_dialog, norm_pos_in_dialog, num_words, num_unique_words, 
+            num_unique_words_after_stemming, is_starter]
+
+
+  def compute_features(self, dialog_dict):
+
+    self.logger.log("Start computing structural features...")
+    structural_features = []
+    for _, dialog in tqdm(dialog_dict.items()):
+      dialog_starter_id = dialog['utterances'][0]['user_id']
+      num_dialog_lines = len(dialog['utterances'])
+      for dialog_part in dialog['utterances']:
+        crt_feats = self._get_feature_per_sentence(dialog_part, dialog_starter_id,
+          num_dialog_lines)
+        structural_features.append(crt_feats)
+
+    colnames = ["Absolute_Position", "Normalized_Position", "Utterance_Length",
+                "Utterance_Length_Unique", "Utterance_Length_Stemmed_Unique", 
+                "Is_Starter"]
+    self.logger.log("Finished computing structural features")
+
+    return pd.DataFrame(structural_features, columns = colnames)
+
+
+
+class ContentFeatures(AbstractFeatures):
+
+  def __init__(self, logger):
+    super().__init__(logger)
+
+  def compute_features(self, dialog_dict):
+    pass
+
+
+
+if __name__=='__main__':
+  print("Library module. No main function")
