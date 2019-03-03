@@ -2,13 +2,19 @@ from features import StructuralFeatures, SentimentFeatures, ContentFeatures
 from data_preproc import DataPreprocessor
 from logger import Logger
 
+from util import hamming_score
+
 import pandas as pd
 import numpy as np
 import itertools
 
 from skmultilearn.problem_transform import ClassifierChain
 from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+from scipy.sparse import csr_matrix
 
 def _compute_feats(msdialog_dict, logger):
   structural_feats_extractor = StructuralFeatures(logger)
@@ -62,24 +68,44 @@ if __name__ == '__main__':
 
   ### WORK IN PROGRESS BELLOW 
 
-  '''
   string_labels = selected_data.iloc[:, -1].values
   atomic_labels_list = [str_label.split() for str_label in string_labels]
-  atomic_labels_list = list(itertools.chain.from_iterable(separate_labels_list))
+  atomic_labels_list = list(itertools.chain.from_iterable(atomic_labels_list))
   atomic_labels_list = set(atomic_labels_list)
 
   one_hot_labels = []
   for string_label in string_labels:
     one_hot_labels.append([1 if tag in string_label else 0 for tag in atomic_labels_list])
+
+
+  X = selected_data.iloc[:, :-1].astype(float).values
+  y = csr_matrix(one_hot_labels)
+
+  X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, 
+    random_state = 13)
+
+  classifier = ClassifierChain(SVC())
+  classifier.fit(X_train, y_train)
+
+  preds = classifier.predict(X_test)
+
+  logger.log("Accuracy {}".format(accuracy_score(y_test,preds)))
+  logger.log("Hamming score {}".format(hamming_score(y_test, preds)))
+
+  '''
+  https://scikit-learn.org/stable/modules/generated/sklearn.metrics.classification_report.html
+    https://github.com/scikit-multilearn/scikit-multilearn/issues/84
+    https://stackoverflow.com/questions/32239577/getting-the-accuracy-for-multi-label-prediction-in-scikit-learn
+    https://www.kaggle.com/roccoli/multi-label-classification-with-sklearn
+    https://www.analyticsvidhya.com/blog/2017/08/introduction-to-multi-label-classification/
+    https://github.com/scikit-multilearn/scikit-multilearn/issues/89
+    https://towardsdatascience.com/journey-to-the-center-of-multi-label-classification-384c40229bff
+    https://github.com/mayank408/TFIDF/blob/master/Sklearn%20TFIDF.ipynb
+
   '''
 
 
-  '''
-  list_labels = 
-  string_labels = selected_data.iloc[:, -1].values
-  one_hot_5w = [1 if word in dialog_part.lower() else 0 for word in list_5w]
-  []
-  '''
+ 
 
   '''
   X = selected_data.iloc[:, :-1].values
