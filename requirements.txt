@@ -1,2 +1,8 @@
 pip install vaderSentiment
 conda install -c anaconda nltk 
+pip install scikit-multilearn
+
+import nltk
+nltk.download('punkt')
+nltk.download('opinion_lexicon')
+
