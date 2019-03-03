@@ -1,6 +1,7 @@
 from datetime import datetime as dt
 import sys
 import os
+import json
 
 _HTML_START = "<HEAD><meta http-equiv='refresh' content='100' ></HEAD><BODY><pre>"
 _HTML_END = "</pre></BODY>"
@@ -9,7 +10,8 @@ class Logger():
 
   def __init__(self, logs_folder = "logs", models_folder = "models", 
                 output_folder = "output", data_folder = "data",
-                show = False, verbosity_level = 0, html_output = False):
+                show = False, verbosity_level = 0, html_output = False,
+                config_file = "config.txt"):
 
     sys.stdout.flush()
     print(self.get_time() + " Initialize the logger")
@@ -20,8 +22,8 @@ class Logger():
     self.data_folder = data_folder
     self.show = show
     self.verbosity_level = verbosity_level
-    self.app_log = list()
     self.html_output = html_output
+    self.config_file = config_file
 
     if not os.path.exists(logs_folder):
       os.makedirs(logs_folder)
@@ -42,6 +44,11 @@ class Logger():
     if not os.path.exists(data_folder):
       os.makedirs(data_folder)
     print(self.get_time() + " Create data folder {}".format(data_folder))
+
+    with open(self.config_file) as fp:
+      self.config_dict = json.load(fp)
+    print(self.get_time() + " Read config file {}".format(config_file))
+
 
   def get_time(self):
     return dt.strftime(dt.now(), '%Y.%m.%d-%H:%M:%S')
