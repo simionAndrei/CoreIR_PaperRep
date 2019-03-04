@@ -47,7 +47,7 @@ class DataPreprocessor():
     self.logger.log("Initial number of unique tags {}".format(len(set(self.initial_tags))))
 
 
-  def _change_tags(self):
+  def _change_tags_remove_irrelevant(self):
 
     if set(self.initial_tags) & set(self.ignored_combinations):
       self.logger.log("Data contains combination of ignored labels: e.g {}".format(
@@ -58,7 +58,6 @@ class DataPreprocessor():
       self.logger.log("Number of this combinations is {}".format(
         num_occurences_ignored_combinations))
 
-    print(self.ignored_labels)
     replace_regex = re.compile(r'\b%s\b' % r'\b|\b'.join(map(re.escape, self.ignored_labels)))
     for item_key in self.msdialog_dict.keys():
       dialog = self.msdialog_dict[item_key]['utterances']
@@ -69,20 +68,38 @@ class DataPreprocessor():
 
         self.msdialog_dict[item_key]['utterances'][i]['tags'] = ' '.join(new_tag.split())
 
-    self.final_tags = [utterance['tags'] for item in self.msdialog_dict.values() for utterance in item['utterances']]
-    self.logger.log("Number of unique tags after first preprocess step {}".format(len(set(self.final_tags))))
+    self.tags_after_step1 = [utterance['tags'] for item in self.msdialog_dict.values(
+      ) for utterance in item['utterances']]
+    self.logger.log("Number of unique tags after first preprocess step {}".format(
+      len(set(self.tags_after_step1))))
+
+
+  def _change_tags_remove_rare(self):
+
+    self.selected_tags.append('O')
+    for item_key in self.msdialog_dict.keys():
+      dialog = self.msdialog_dict[item_key]['utterances']
+      for i, qa in enumerate(dialog):
+        crt_tag = qa['tags']
+        if crt_tag not in self.selected_tags:
+          crt_tag = np.random.choice(crt_tag.split())
+          self.msdialog_dict[item_key]['utterances'][i]['tags'] = crt_tag
+
+    self.final_tags = [utterance['tags'] for item in self.msdialog_dict.values(
+      ) for utterance in item['utterances']]
+    self.logger.log("Number of unique tags after second preprocess step {}".format(len(set(self.final_tags))))
 
 
   def _select_topNp_tags(self, n):
-    occurences = dict(Counter(self.final_tags)).items()
-    self.occurences = sorted(occurences, key=lambda tup: tup[1], reverse = True)
+    occurences = dict(Counter(self.tags_after_step1)).items()
+    self.occurences_step1 = sorted(occurences, key=lambda tup: tup[1], reverse = True)
 
     total_num_occurences = sum([item[1] for item in occurences])
     for top_Np_idx in range(len(occurences)):
-      if sum([item[1] for item in self.occurences[:top_Np_idx]]) / total_num_occurences > n:
+      if sum([item[1] for item in self.occurences_step1[:top_Np_idx]]) / total_num_occurences > n:
         break
 
-    self.selected_tags = [item[0] for item in self.occurences[:top_Np_idx]]
+    self.selected_tags = [item[0] for item in self.occurences_step1[:top_Np_idx]]
     self.logger.log("Number of unique tags that made {:.2f}% of the occurences {}".format(
       n * 100, top_Np_idx))
     self.logger.log("{}".format(self.selected_tags))
@@ -92,8 +109,12 @@ class DataPreprocessor():
 
     self._compute_initial_tags()
     self._compute_ignored_tags()
-    self._change_tags()
+    self._change_tags_remove_irrelevant()
     self._select_topNp_tags(topNp)
+    self._change_tags_remove_rare()
+
+    occurences = dict(Counter(self.final_tags)).items()
+    self.occurences = sorted(occurences, key=lambda tup: tup[1], reverse = True)
 
     return self.msdialog_dict
 
