@@ -3,6 +3,7 @@ import numpy as np
 import itertools
 import json
 import random
+import re
 
 
 class DataPreprocessor():
@@ -57,13 +58,14 @@ class DataPreprocessor():
       self.logger.log("Number of this combinations is {}".format(
         num_occurences_ignored_combinations))
 
+    replace_regex = re.compile('|'.join(map(re.escape, self.ignored_labels)))
     for item_key in self.msdialog_dict.keys():
       dialog = self.msdialog_dict[item_key]['utterances']
       for i, qa in enumerate(dialog):
         new_tag = ' '.join(qa['tags'].split())
         if any(label in new_tag for label in self.ignored_labels) and ' ' in new_tag and new_tag not in self.ignored_combinations:
-          for label in self.ignored_labels:
-            new_tag = new_tag.replace(label, "")     
+          new_tag = replace_regex.sub("", new_tag)
+
         self.msdialog_dict[item_key]['utterances'][i]['tags'] = ' '.join(new_tag.split())
 
     self.final_tags = [utterance['tags'] for item in self.msdialog_dict.values() for utterance in item['utterances']]
