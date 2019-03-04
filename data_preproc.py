@@ -58,7 +58,8 @@ class DataPreprocessor():
       self.logger.log("Number of this combinations is {}".format(
         num_occurences_ignored_combinations))
 
-    replace_regex = re.compile('|'.join(map(re.escape, self.ignored_labels)))
+    print(self.ignored_labels)
+    replace_regex = re.compile(r'\b%s\b' % r'\b|\b'.join(map(re.escape, self.ignored_labels)))
     for item_key in self.msdialog_dict.keys():
       dialog = self.msdialog_dict[item_key]['utterances']
       for i, qa in enumerate(dialog):
