@@ -62,6 +62,9 @@ class Logger():
   def get_data_file(self, filename):
     return os.path.join(self.data_folder, filename)
 
+  def get_time_prefix(self):
+    return dt.strftime(dt.now(), '%Y-%m-%d_%H_%M_%S')
+
   def create_file(self):
 
     time_prefix = dt.strftime(dt.now(), '%Y-%m-%d_%H_%M_%S')
