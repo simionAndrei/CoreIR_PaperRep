@@ -59,7 +59,8 @@ class DataPreprocessor():
         num_occurences_ignored_combinations))
 
     replace_regex = re.compile(r'\b%s\b' % r'\b|\b'.join(map(re.escape, self.ignored_labels)))
-    for item_key in self.msdialog_dict.keys():
+    dialog_ids = list(self.msdialog_dict.keys())
+    for item_key in dialog_ids:
       dialog = self.msdialog_dict[item_key]['utterances']
       for i, qa in enumerate(dialog):
         new_tag = ' '.join(qa['tags'].split())
@@ -77,7 +78,8 @@ class DataPreprocessor():
   def _change_tags_remove_rare(self):
 
     self.selected_tags.append('O')
-    for item_key in self.msdialog_dict.keys():
+    dialog_ids = list(self.msdialog_dict.keys())
+    for item_key in dialog_ids:
       dialog = self.msdialog_dict[item_key]['utterances']
       for i, qa in enumerate(dialog):
         crt_tag = qa['tags']
@@ -87,7 +89,8 @@ class DataPreprocessor():
 
     self.final_tags = [utterance['tags'] for item in self.msdialog_dict.values(
       ) for utterance in item['utterances']]
-    self.logger.log("Number of unique tags after second preprocess step {}".format(len(set(self.final_tags))))
+    self.logger.log("Number of unique tags after second preprocess step {}".format(
+      len(set(self.final_tags))))
 
 
   def _select_topNp_tags(self, n):
@@ -107,6 +110,7 @@ class DataPreprocessor():
 
   def get_preprocess_data(self, topNp):
 
+    np.random.seed(0)
     self._compute_initial_tags()
     self._compute_ignored_tags()
     self._change_tags_remove_irrelevant()
