@@ -1,4 +1,6 @@
 {
 	"DATA_FILE" : "MSDialog-Intent.json",
-	"COMPUTE_FEATS": 0
+	"COMPUTE_FEATS": 0, 
+	"COMPUTE_HYPERPARAMS": 1, 
+	"MODE": "draw_plots"
 }
