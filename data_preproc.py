@@ -17,7 +17,7 @@ class DataPreprocessor():
   def _read_data(self):
     with open(self.logger.get_data_file(self.data_filename)) as fp:
       self.msdialog_dict = json.load(fp)
-    self.logger.log("Finished read data from {}".format(self.data_filename))
+    self.logger.log("Finished read data from {}".format(self.data_filename), show_time = True)
 
   def _compute_ignored_tags(self):
     self.ignored_labels = ['GG', 'JK', 'O']
@@ -91,6 +91,7 @@ class DataPreprocessor():
       ) for utterance in item['utterances']]
     self.logger.log("Number of unique tags after second preprocess step {}".format(
       len(set(self.final_tags))))
+    self.logger.log("{}".format(self.selected_tags))
 
 
   def _select_topNp_tags(self, n):
@@ -119,6 +120,8 @@ class DataPreprocessor():
 
     occurences = dict(Counter(self.final_tags)).items()
     self.occurences = sorted(occurences, key=lambda tup: tup[1], reverse = True)
+    
+    self.logger.log("Final tags distribution \n {}".format(self.occurences))
 
     return self.msdialog_dict
 
