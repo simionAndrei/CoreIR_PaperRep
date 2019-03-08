@@ -5,7 +5,9 @@ from sklearn.ensemble import RandomForestClassifier
 
 from sklearn.model_selection import RandomizedSearchCV
 
-from util import hamming_score, label_based_accuracy
+from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
+
+from util import label_based_accuracy
 
 import numpy as np
 
@@ -50,6 +52,10 @@ def test_model(X_train, y_train, X_test, y_test, logger, base_estimator, hyperpa
 
   accuracy = label_based_accuracy(y_test.toarray(), y_pred.toarray())
   logger.log("Accuracy label based score {}".format(accuracy))
+  logger.log("Subset accuracy {}".format(accuracy_score(y_test.toarray(), y_pred.toarray())))
+  logger.log("Recall {}".format(recall_score(y_test.toarray(), y_pred.toarray(), average = 'micro')))
+  logger.log("Precision {}".format(precision_score(y_test.toarray(), y_pred.toarray(), average = 'micro')))
+  logger.log("F1 {}".format(f1_score(y_test.toarray(), y_pred.toarray(), average = 'micro')))
 
   return classifier
 

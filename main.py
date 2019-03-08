@@ -2,8 +2,6 @@ from features import StructuralFeatures, SentimentFeatures, ContentFeatures
 from data_preproc import DataPreprocessor
 from logger import Logger
 
-from util import hamming_score, label_based_accuracy
-
 import pandas as pd
 import numpy as np
 import itertools
@@ -15,7 +13,7 @@ from scipy.sparse import csr_matrix
 
 from test import test_svm, test_random_forest
 
-from plots import make_occurences_plot
+from plots import make_tag_occurences_plot
 
 def _compute_feats(msdialog_dict, logger):
   structural_feats_extractor = StructuralFeatures(logger)
@@ -85,14 +83,39 @@ if __name__ == '__main__':
   X_valid, X_test, y_valid, y_test = train_test_split(X_test, y_test, test_size = 0.5, 
     random_state = 13)
 
+  logger.log("Split data in train/validation/test: {}/{}/{}".format(
+    X_train.shape[0], X_valid.shape[0], X_test.shape[0]))
+
+  if logger.config_dict['MODE'].lower() == "test":
+    if logger.config_dict['COMPUTE_HYPERPARAMS']:
+      random_forest_classifier = test_random_forest(X_train, y_train, X_test, y_test, 
+        logger, X_valid, y_valid)
+      svm_classifier = test_svm(X_train, y_train, X_test, y_test, logger, 
+        X_valid, y_valid)
+    else:
+      random_forest_classifier = test_random_forest(X_train, y_train, X_test, y_test, 
+        logger)
+      svm_classifier = test_svm(X_train, y_train, X_test, y_test, logger)
+  elif logger.config_dict['MODE'].lower() == "draw_plots":
+    make_tag_occurences_plot(data_preprocessor.occurences_step1, 
+      "", "Frequency rank", "Utterance frequency", "occurences_step1.jpg", logger, 
+      vertical_line = 37, color = 'white', edgecolor = 'blue')
+    make_tag_occurences_plot(data_preprocessor.occurences, 
+      "", "Utterance tag", "Frequency", "occurences_final.jpg", logger,
+      color = 'blue', plot_tags = True, edgecolor = 'black')
+
+  '''
   make_occurences_plot(data_preprocessor.occurences, "final_tag_distribution.jpg", 
     logger)
+  '''
 
   '''
   random_forest_classifier = test_random_forest(X_train, y_train, X_test, y_test, 
     logger, X_valid, y_valid)
   svm_classifier = test_svm(X_train, y_train, X_test, y_test, logger, X_valid, y_valid)
   '''
+
+  logger.close()
 
 
 

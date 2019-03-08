@@ -32,6 +32,7 @@ class Logger():
 
     if self.html_output:
       self.log_file.write(_HTML_START)
+      self.log_file.close()
 
     if not os.path.exists(models_folder):
       os.makedirs(models_folder)
@@ -78,6 +79,7 @@ class Logger():
 
       if not os.path.exists(log_path):
         print(self.get_time() + " Create log file {}".format(log_path))
+        self.log_filename = log_path
         return open(log_path, 'w')
 
   def change_show(self, show):
@@ -85,8 +87,8 @@ class Logger():
 
   def close(self):
     if self.html_output:
-      self.log_file.write(_HTML_END)
-    self.log_file.close()
+      with open(self.log_filename, "a") as fp:
+        fp.write(_HTML_END)
     
   def log(self, str_to_log, show = None, tabs = 0, verbosity_level = 0, show_time = False):
 
@@ -108,5 +110,6 @@ class Logger():
     if show:
       print(time_prefix + tabs * '\t' + str_to_log, flush=True)
 
-    self.log_file.write(time_prefix + str_to_log)
-    self.log_file.write("\n")
+    with open(self.log_filename, "a") as fp:
+      fp.write(time_prefix + str_to_log)
+      fp.write("\n")

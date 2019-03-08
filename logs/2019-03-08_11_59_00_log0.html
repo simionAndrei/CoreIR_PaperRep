@@ -1,0 +1,63 @@
+<HEAD><meta http-equiv='refresh' content='100' ></HEAD><BODY><pre>[2019.03.08-11:59:00] Finished read data from MSDialog-Intent.json [0.09s]
+[2019.03.08-11:59:00] Number of dialogs 2199
+[2019.03.08-11:59:00] Number of utterances 10020
+[2019.03.08-11:59:00] Randomly selected final utterance {'id': 48541, 'utterance_pos': 5, 'actor_type': 'Agent', 'user_id': 'Jerry', 'utterance': 'Are you using Google Chrome?   Add, edit, or remove search engines On your computer, open Chrome. At the top right, click More Settings. In the "Search" section, lick Manage search engines. Under "Other search engines" you can: Add a search engine: Fill out the fields to set up the search engine. ... Click Done. Set your default search engine - Computer - Chrome Help - Google Help https://support.google.com/chrome/answer/95426?co=GENIE.Platform%3DDesktop...', 'vote': '0', 'utterance_time': '2017-01-11T01:37:24', 'affiliation': 'Community Moderator | Article Author', 'is_answer': 0, 'tags': 'FQ PA FD'}
+[2019.03.08-11:59:00] Initial number of unique tags 345
+[2019.03.08-11:59:00] Data contains combination of ignored labels: e.g ['O JK']
+[2019.03.08-11:59:00] Number of this combinations is 54
+[2019.03.08-11:59:00] Number of unique tags after first preprocess step 178
+[2019.03.08-11:59:00] Number of unique tags that made 90.00% of the occurences 36
+[2019.03.08-11:59:00] ['PA', 'OQ', 'PF', 'PA FD', 'FD', 'GG', 'IR PA', 'FD NF', 'FD OQ', 'IR', 'RQ', 'PA IR', 'NF', 'PF FD', 'FQ FD', 'CQ FD', 'FQ', 'PA PF', 'FD RQ', 'CQ IR', 'FQ RQ', 'FD PF', 'CQ PA', 'FQ IR', 'FQ CQ', 'IR FD', 'JK', 'CQ IR PA', 'RQ OQ', 'IR OQ', 'NF OQ', 'FQ FD NF', 'CQ', 'FQ PA', 'FQ PF', 'FQ NF']
+[2019.03.08-11:59:00] Number of unique tags after second preprocess step 37
+[2019.03.08-11:59:00] ['PA', 'OQ', 'PF', 'PA FD', 'FD', 'GG', 'IR PA', 'FD NF', 'FD OQ', 'IR', 'RQ', 'PA IR', 'NF', 'PF FD', 'FQ FD', 'CQ FD', 'FQ', 'PA PF', 'FD RQ', 'CQ IR', 'FQ RQ', 'FD PF', 'CQ PA', 'FQ IR', 'FQ CQ', 'IR FD', 'JK', 'CQ IR PA', 'RQ OQ', 'IR OQ', 'NF OQ', 'FQ FD NF', 'CQ', 'FQ PA', 'FQ PF', 'FQ NF', 'O']
+[2019.03.08-11:59:00] Final tags distribution 
+ [('PA', 2613), ('OQ', 1930), ('FD', 644), ('PF', 629), ('PA FD', 523), ('GG', 362), ('NF', 256), ('RQ', 251), ('IR', 233), ('IR PA', 227), ('FD NF', 198), ('FQ', 196), ('CQ', 170), ('FD OQ', 169), ('PA IR', 144), ('PF FD', 140), ('FQ FD', 137), ('CQ FD', 116), ('PA PF', 98), ('FD RQ', 87), ('CQ IR', 81), ('JK', 74), ('FQ RQ', 71), ('FD PF', 67), ('CQ PA', 62), ('FQ IR', 58), ('FQ CQ', 55), ('IR FD', 54), ('CQ IR PA', 51), ('RQ OQ', 49), ('IR OQ', 48), ('NF OQ', 47), ('FQ FD NF', 44), ('FQ PA', 41), ('FQ PF', 38), ('FQ NF', 38), ('O', 19)]
+[2019.03.08-11:59:00] Start computing structural features...
+[2019.03.08-12:02:25] Finished computing structural features [204.74s]
+[2019.03.08-12:02:25] Structural Features: 
+    Absolute_Position  Normalized_Position     ...      Utterance_Length_Stemmed_Unique  Is_Starter
+0                  1             0.333333     ...                                   26        True
+1                  2             0.666667     ...                                   52       False
+2                  3             1.000000     ...                                    7        True
+3                  1             0.200000     ...                                   44        True
+4                  2             0.400000     ...                                  142       False
+
+[5 rows x 6 columns]
+[2019.03.08-12:02:25] Start computing sentiment features...
+[2019.03.08-12:07:14] Finished computing sentiment features [289.18s]
+[2019.03.08-12:07:14] Sentiment Features: 
+    Thank  Exclamation_Mark         ...           Opinion_Lexicon_POS  Opinion_Lexicon_NEG
+0  False             False         ...                             0                    1
+1  False             False         ...                             1                    0
+2  False             False         ...                             0                    1
+3  False             False         ...                             3                    2
+4   True             False         ...                             3                    3
+
+[5 rows x 8 columns]
+[2019.03.08-12:07:14] Start computing content features...
+[2019.03.08-12:07:53] Finished computing content features [38.80s]
+[2019.03.08-12:07:53] Content Features: 
+    Initial_Utterance_Similarity  Dialog_Similarity  Question_Mark  Duplicate  What  Where  When  Why  Who  How
+0                      1.000000           0.073924          False      False     0      0     0    0    0    0
+1                      0.044594           0.036709          False      False     0      0     0    0    0    0
+2                      0.110337           0.061776          False      False     0      0     0    0    0    0
+3                      1.000000           0.233708          False      False     0      1     1    0    1    0
+4                      0.223991           0.432081          False      False     0      1     0    0    0    0
+[2019.03.08-12:07:53] Split data in train/validation/test: 8016/1002/1002
+[2019.03.08-12:07:53] Start hyperparameter random grid-search for RandomForestClassifier
+[2019.03.08-12:26:28] Hyperparameter random grid-search done [1114.21s]
+[2019.03.08-12:26:28] Best params are {'classifier__n_estimators': 800, 'classifier__min_samples_split': 5, 'classifier__min_samples_leaf': 2, 'classifier__max_features': 'sqrt', 'classifier__max_depth': None, 'classifier__bootstrap': False}
+[2019.03.08-12:28:01] Accuracy label based score 0.6368928809048571
+[2019.03.08-12:28:01] Subset accuracy 0.5389221556886228
+[2019.03.08-12:28:01] Recall 0.6443850267379679
+[2019.03.08-12:28:01] Precision 0.8155668358714044
+[2019.03.08-12:28:01] F1 0.7199402539208364
+[2019.03.08-12:28:01] Start hyperparameter random grid-search for SVC
+[2019.03.08-13:50:23] Hyperparameter random grid-search done [4942.10s]
+[2019.03.08-13:50:23] Best params are {'classifier__kernel': 'linear', 'classifier__gamma': 0.001, 'classifier__C': 1}
+[2019.03.08-14:07:23] Accuracy label based score 0.6217564870259481
+[2019.03.08-14:07:23] Subset accuracy 0.5269461077844312
+[2019.03.08-14:07:23] Recall 0.6276737967914439
+[2019.03.08-14:07:23] Precision 0.7603238866396761
+[2019.03.08-14:07:23] F1 0.6876601977297693
+</pre></BODY>
