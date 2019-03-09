@@ -212,10 +212,10 @@ def test_combiner_svm_randf(X_train, y_train, X_test, y_test, logger):
   logger.log("Precision {}".format(precision_score(y_test.toarray(), y_pred.toarray(), average = 'micro')))
   logger.log("F1 {}".format(f1_score(y_test.toarray(), y_pred.toarray(), average = 'micro')))
 
-  model_filename = str(ensemble_weights[0] * 100) + "SVM_" +  str(ensemble_weights[1] * 100) + "RANDF_"
+  model_filename = str(int(ensemble_weights[0] * 100)) + "SVM_" +  str(int(ensemble_weights[1] * 100)) + "RANDF_"
   model_filename += logger.get_time_prefix()
   model_filename += ".pkl"
-  with open(logger.get_model_file(model_filename), 'w') as fp:
+  with open(logger.get_model_file(model_filename), 'wb') as fp:
     pickle.dump(ensemble_model, fp)
 
   return ensemble_model
