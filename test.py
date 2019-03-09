@@ -171,10 +171,10 @@ def test_combiner_svm_ada(X_train, y_train, X_test, y_test, logger):
   logger.log("Precision {}".format(precision_score(y_test.toarray(), y_pred.toarray(), average = 'micro')))
   logger.log("F1 {}".format(f1_score(y_test.toarray(), y_pred.toarray(), average = 'micro')))
 
-  model_filename = str(ensemble_weights[0] * 100) + "SVM_" +  str(ensemble_weights[1] * 100) + "ADA"
+  model_filename = str(int(ensemble_weights[0] * 100)) + "SVM_" +  str(int(ensemble_weights[1] * 100)) + "ADA_"
   model_filename += logger.get_time_prefix()
   model_filename += ".pkl"
-  with open(logger.get_model_file(model_filename), 'w') as fp:
+  with open(logger.get_model_file(model_filename), 'wb') as fp:
     pickle.dump(ensemble_model, fp)
 
   return ensemble_model
@@ -213,6 +213,47 @@ def test_combiner_svm_randf(X_train, y_train, X_test, y_test, logger):
   logger.log("F1 {}".format(f1_score(y_test.toarray(), y_pred.toarray(), average = 'micro')))
 
   model_filename = str(int(ensemble_weights[0] * 100)) + "SVM_" +  str(int(ensemble_weights[1] * 100)) + "RANDF_"
+  model_filename += logger.get_time_prefix()
+  model_filename += ".pkl"
+  with open(logger.get_model_file(model_filename), 'wb') as fp:
+    pickle.dump(ensemble_model, fp)
+
+  return ensemble_model
+
+
+def test_combiner_ada_randf(X_train, y_train, X_test, y_test, logger):
+
+  with open(logger.get_model_file(logger.config_dict['BEST_ADA']), 'r') as fp:
+    adaboost_hyperparams = json.load(fp)
+  with open(logger.get_model_file(logger.config_dict['BEST_RANDF']), 'r') as fp:
+    randf_hyperparams = json.load(fp)
+
+  adaboost_model = AdaBoostClassifier(DecisionTreeClassifier())
+  adaboost_model.set_params(**adaboost_hyperparams)
+  randf_model = RandomForestClassifier()
+  randf_model.set_params(**randf_hyperparams)
+
+  ensemble_weights = logger.config_dict['ENS3_WEIGHTS']
+  ensemble_model = ClassifierChain(
+    VotingClassifier(estimators = [('ADA', adaboost_model), ('RANDF', randf_model)], voting='soft', 
+    weights = ensemble_weights, n_jobs = -1))
+
+  logger.log("Start training average ensemble {:.2f} AdaBoost + {:.2f} RandForest ...".format(
+    ensemble_weights[0], ensemble_weights[1]))
+  ensemble_model.fit(X_train, y_train)
+  logger.log("Finish training average ensemble", show_time = True)
+
+  logger.log("Evaluating model on test data ...")
+  y_pred = ensemble_model.predict(X_test)
+
+  accuracy = label_based_accuracy(y_test.toarray(), y_pred.toarray())
+  logger.log("Accuracy label based score {}".format(accuracy))
+  logger.log("Subset accuracy {}".format(accuracy_score(y_test.toarray(), y_pred.toarray())))
+  logger.log("Recall {}".format(recall_score(y_test.toarray(), y_pred.toarray(), average = 'micro')))
+  logger.log("Precision {}".format(precision_score(y_test.toarray(), y_pred.toarray(), average = 'micro')))
+  logger.log("F1 {}".format(f1_score(y_test.toarray(), y_pred.toarray(), average = 'micro')))
+
+  model_filename = str(int(ensemble_weights[0] * 100)) + "ADA_" +  str(int(ensemble_weights[1] * 100)) + "RANDF_"
   model_filename += logger.get_time_prefix()
   model_filename += ".pkl"
   with open(logger.get_model_file(model_filename), 'wb') as fp:

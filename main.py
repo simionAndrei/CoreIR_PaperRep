@@ -9,7 +9,8 @@ import itertools
 from sklearn.model_selection import train_test_split
 from scipy.sparse import csr_matrix
 
-from test import test_svm, test_random_forest, test_ada_boost, test_combiner_svm_randf
+from test import test_svm, test_random_forest, test_ada_boost
+from  test import test_combiner_svm_randf, test_combiner_ada_randf, test_combiner_svm_ada
 from plots import make_tag_occurences_plot, make_accuracy_f1_plot
 
 def _compute_feats(msdialog_dict, logger):
@@ -92,7 +93,7 @@ if __name__ == '__main__':
       svm_classifier = test_svm(X_train, y_train, X_test, y_test, logger, 
         X_valid, y_valid)
     else:
-      ens_model = test_combiner_svm_randf(X_train, y_train, X_test, y_test, logger)
+      ens_model = test_combiner_ada_randf(X_train, y_train, X_test, y_test, logger)
 
   elif logger.config_dict['MODE'].lower() == "draw_plots":
     make_accuracy_f1_plot("results.csv", "acc_f1.jpg", logger)
