@@ -7,12 +7,9 @@ import numpy as np
 import itertools
 
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
-
 from scipy.sparse import csr_matrix
 
-from test import test_svm, test_random_forest
-
+from test import test_svm, test_random_forest, test_ada_boost, test_combiner_svm_randf
 from plots import make_tag_occurences_plot
 
 def _compute_feats(msdialog_dict, logger):
@@ -88,14 +85,15 @@ if __name__ == '__main__':
 
   if logger.config_dict['MODE'].lower() == "test":
     if logger.config_dict['COMPUTE_HYPERPARAMS']:
+      ada_boost_classifier = test_ada_boost(X_train, y_train, X_test, y_test, 
+        logger, X_valid, y_valid)
       random_forest_classifier = test_random_forest(X_train, y_train, X_test, y_test, 
         logger, X_valid, y_valid)
       svm_classifier = test_svm(X_train, y_train, X_test, y_test, logger, 
         X_valid, y_valid)
     else:
-      random_forest_classifier = test_random_forest(X_train, y_train, X_test, y_test, 
-        logger)
-      svm_classifier = test_svm(X_train, y_train, X_test, y_test, logger)
+      ens_model = test_combiner_svm_randf(X_train, y_train, X_test, y_test, logger)
+
   elif logger.config_dict['MODE'].lower() == "draw_plots":
     make_tag_occurences_plot(data_preprocessor.occurences_step1, 
       "", "Frequency rank", "Utterance frequency", "occurences_step1.jpg", logger, 
@@ -104,28 +102,4 @@ if __name__ == '__main__':
       "", "Utterance tag", "Frequency", "occurences_final.jpg", logger,
       color = 'blue', plot_tags = True, edgecolor = 'black')
 
-  '''
-  make_occurences_plot(data_preprocessor.occurences, "final_tag_distribution.jpg", 
-    logger)
-  '''
-
-  '''
-  random_forest_classifier = test_random_forest(X_train, y_train, X_test, y_test, 
-    logger, X_valid, y_valid)
-  svm_classifier = test_svm(X_train, y_train, X_test, y_test, logger, X_valid, y_valid)
-  '''
-
   logger.close()
-
-
-
-
-
-
-
-
-
-
-
-
-
