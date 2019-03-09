@@ -11,6 +11,7 @@ from util import label_based_accuracy
 
 import numpy as np
 import json
+import pickle
 
 
 def test_model(X_train, y_train, X_test, y_test, logger, base_estimator, hyperparams_grid, 
@@ -157,11 +158,11 @@ def test_combiner_svm_ada(X_train, y_train, X_test, y_test, logger):
 
   logger.log("Start training average ensemble {:.2f} SVM + {:.2f} AdaBoost ...".format(
     ensemble_weights[0], ensemble_weights[1]))
-  final_ensemble.fit(X_train, y_train)
+  ensemble_model.fit(X_train, y_train)
   logger.log("Finish training average ensemble", show_time = True)
 
   logger.log("Evaluating model on test data ...")
-  y_pred = final_ensemble.predict(X_test)
+  y_pred = ensemble_model.predict(X_test)
 
   accuracy = label_based_accuracy(y_test.toarray(), y_pred.toarray())
   logger.log("Accuracy label based score {}".format(accuracy))
@@ -170,7 +171,13 @@ def test_combiner_svm_ada(X_train, y_train, X_test, y_test, logger):
   logger.log("Precision {}".format(precision_score(y_test.toarray(), y_pred.toarray(), average = 'micro')))
   logger.log("F1 {}".format(f1_score(y_test.toarray(), y_pred.toarray(), average = 'micro')))
 
-  return final_ensemble
+  model_filename = str(ensemble_weights[0] * 100) + "SVM_" +  str(ensemble_weights[1] * 100) + "ADA"
+  model_filename += logger.get_time_prefix()
+  model_filename += ".pkl"
+  with open(logger.get_model_file(model_filename), 'w') as fp:
+    pickle.dump(ensemble_model, fp)
+
+  return ensemble_model
 
 
 def test_combiner_svm_randf(X_train, y_train, X_test, y_test, logger):
@@ -187,16 +194,16 @@ def test_combiner_svm_randf(X_train, y_train, X_test, y_test, logger):
 
   ensemble_weights = logger.config_dict['ENS2_WEIGHTS']
   ensemble_model = ClassifierChain(
-    VotingClassifier(estimators = [('SVM', svm_model), ('RANDF', adaboost_model)], voting='soft', 
+    VotingClassifier(estimators = [('SVM', svm_model), ('RANDF', randf_model)], voting='soft', 
     weights = ensemble_weights, n_jobs = -1))
 
   logger.log("Start training average ensemble {:.2f} SVM + {:.2f} RandForest ...".format(
     ensemble_weights[0], ensemble_weights[1]))
-  final_ensemble.fit(X_train, y_train)
+  ensemble_model.fit(X_train, y_train)
   logger.log("Finish training average ensemble", show_time = True)
 
   logger.log("Evaluating model on test data ...")
-  y_pred = final_ensemble.predict(X_test)
+  y_pred = ensemble_model.predict(X_test)
 
   accuracy = label_based_accuracy(y_test.toarray(), y_pred.toarray())
   logger.log("Accuracy label based score {}".format(accuracy))
@@ -205,4 +212,10 @@ def test_combiner_svm_randf(X_train, y_train, X_test, y_test, logger):
   logger.log("Precision {}".format(precision_score(y_test.toarray(), y_pred.toarray(), average = 'micro')))
   logger.log("F1 {}".format(f1_score(y_test.toarray(), y_pred.toarray(), average = 'micro')))
 
-  return final_ensemble
+  model_filename = str(ensemble_weights[0] * 100) + "SVM_" +  str(ensemble_weights[1] * 100) + "RANDF_"
+  model_filename += logger.get_time_prefix()
+  model_filename += ".pkl"
+  with open(logger.get_model_file(model_filename), 'w') as fp:
+    pickle.dump(ensemble_model, fp)
+
+  return ensemble_model
