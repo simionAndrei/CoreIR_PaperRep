@@ -42,12 +42,15 @@ def make_accuracy_f1_plot(results_filename, plot_filename, logger):
   acc = results_df['Accuracy'].values
   f1 = results_df['F1'].values
 
-  colors = ['orange', 'blue', 'red', 'yellow', 'navy', 'maroon']
-  colors = sns.color_palette("colorblind", f1.shape[0])
+  colors = ['orange', 'blue', 'red', 'yellow', 'navy', 'maroon', 'green', 'pink', 'teal']
+  colors = ['blue', 'blue', 'blue', 'red', 'green', 'orange', 'dimgray', 'maroon']
+  markers = ['*', 'p', 'D', 'X', 'X', 'X', 'X', 'X']
+  #colors = sns.color_palette("Paired", f1.shape[0])
+  print(colors)
   for i, model in enumerate(models):
     x = acc[i]
     y = f1[i]
-    plt.scatter(x, y, marker = 'x', color = colors[i], label = str(model), s = [80])
+    plt.scatter(x, y, marker = markers[i], color = colors[i], label = str(model), s = [80])
 
   plt.xlabel("Accuracy")
   plt.ylabel("F1")
