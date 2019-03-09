@@ -1,0 +1,1 @@
+{"n_estimators": 166, "learning_rate": 0.01, "base_estimator__splitter": "random", "base_estimator__min_samples_split": 5, "base_estimator__min_samples_leaf": 1, "base_estimator__max_features": null, "base_estimator__max_depth": 40, "base_estimator__criterion": "gini"}
