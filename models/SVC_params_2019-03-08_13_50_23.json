@@ -1,1 +1,1 @@
-{"classifier__kernel": "linear", "classifier__gamma": 0.001, "classifier__C": 1}
+{"kernel": "linear", "gamma": 0.001, "C": 1}
