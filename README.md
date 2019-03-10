@@ -104,7 +104,7 @@ The tests for the machine learning models can be run from `main.py` after settin
 (core_ir) python main.py
 ```
 
-The tests for the fully connected neural network model can be run from `test_fcn.py`, after making you have a working [CUDA enviroment](https://www.tensorflow.org/install/gpu) for GPU support:
+The tests for the fully connected neural network model can be run from `test_fcn.py`, after making sure you have a working [CUDA enviroment](https://www.tensorflow.org/install/gpu) for GPU support:
 ```shell
 (keras_gpu) python test_fcn.py
 ```
