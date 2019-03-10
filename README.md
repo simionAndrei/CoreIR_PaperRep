@@ -1,7 +1,12 @@
 # CoreIR Paper Reproduction 
 ## ["User Intent Prediction in Information-seeking Conversations"](https://arxiv.org/abs/1901.03489)
 
-Code for Group 23 python implementation of Core IR project IN4325.
+Code for Group 26 python implementation of Core IR project IN4325.
+
+Team members:
+ * [Simion-Constantinescu Andrei](https://www.linkedin.com/in/andrei-simion-constantinescu/)
+ * [Nele Albers](https://www.tudelft.nl/ewi/)
+ * [Priya Sarkar](https://www.tudelft.nl/ewi/)
 
 ## Data
 
