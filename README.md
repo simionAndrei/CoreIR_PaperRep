@@ -24,6 +24,7 @@ root
 |   test.py
 |   test_fcn.py
 |   util.py
+|   feature_importance.py
 |   plots.py
 |   logger.py
 |   config.txt
@@ -36,7 +37,8 @@ root
 │   └───
 |
 └───logs
-|   |   Log files in HTML format from hyperpars search, training and testing simple and ensembles models
+|   |   Log files in HTML format for 
+|   |   	hyperpars search, training and testing simple and ensembles models, compute features importance
 |   └───
 |
 └───models
@@ -51,6 +53,10 @@ root
     │   Plot with models results for best performance in terms of Accuracy and F1 (Recall and Precision)
     |
     |   results.csv
+    |
+    |   best.csv
+    |
+    |   feats_imp.csv
     └───
 ```
     
@@ -61,7 +67,7 @@ root
 	"DATA_FILE": "MSDialog-Intent.json",   @Original dialog dataset
 	"COMPUTE_FEATS": 0,                    @Values: [0, 1] compute features or read features from csv 
 	"COMPUTE_HYPERPARAMS": 0,              @Values: [0, 1] compute hyperamas or read the saved ones
-	"MODE": "draw_plots",                  @Values: ["test", "draw_plots"] for testing or generating plots
+	"MODE": "draw_plots",                  @Values: ["tests", "plots", "feats"] for model tests/plots/features-importance
 	"BEST_SVM": "SVC_params_2019-03-08_13_50_23.json",
 	"BEST_ADA": "AdaBoostClassifier_params_2019-03-08_17_28_49.json",
 	"BEST_RANDF": "RandomForestClassifier_params_2019-03-08_12_26_28.json",
