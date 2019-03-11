@@ -21,7 +21,7 @@ if __name__ == '__main__':
   else:
     structural_df, sentiment_df, content_df = read_feats(logger)
         
-  if logger.config_dict['MODE'].lower() == "test":
+  if logger.config_dict['MODE'].lower() == "tests":
 
     feats_df = pd.concat([structural_df, sentiment_df, content_df], axis = 1)
     feats_df['label'] = data_preprocessor.final_tags
@@ -42,7 +42,7 @@ if __name__ == '__main__':
     else:
       ens_model = test_combiner_svm_randf(X_train, y_train, X_test, y_test, logger)
 
-  elif logger.config_dict['MODE'].lower() == "draw_plots":
+  elif logger.config_dict['MODE'].lower() == "plots":
     make_accuracy_f1_plot("best.csv", "acc_f1.jpg", logger)
     make_tag_occurences_plot(data_preprocessor.occurences_step1, 
       "", "Frequency rank", "Utterance frequency", "occurences_step1.jpg", logger, 
@@ -51,7 +51,7 @@ if __name__ == '__main__':
       "", "Utterance tag", "Frequency", "occurences_final.jpg", logger,
       color = 'blue', plot_tags = True, edgecolor = 'black')
 
-  elif logger.config_dict['MODE'].lower() == "feats_imp":
+  elif logger.config_dict['MODE'].lower() == "feats":
     analyzer = FeatureImportanceAnalyzer(sentiment_df, content_df, structural_df, 
       data_preprocessor.final_tags, logger)
     analyzer.analyze_sentiment()
@@ -59,5 +59,5 @@ if __name__ == '__main__':
     analyzer.analyze_structural()
     analyzer.analyze_combinations()
     analyzer.analyze_individual_importance()
-    
+
   logger.close()
