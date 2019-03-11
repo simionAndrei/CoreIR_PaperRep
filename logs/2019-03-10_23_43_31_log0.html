@@ -1,0 +1,72 @@
+<HEAD><meta http-equiv='refresh' content='100' ></HEAD><BODY><pre>[2019.03.10-23:43:31] Finished read data from MSDialog-Intent.json [0.09s]
+[2019.03.10-23:43:31] Number of dialogs 2199
+[2019.03.10-23:43:31] Number of utterances 10020
+[2019.03.10-23:43:31] Randomly selected final utterance {'id': 135934, 'utterance_pos': 4, 'actor_type': 'Agent', 'user_id': 'Jack', 'utterance': ' Thank you for your feedback, this will definitely help us improve User experience. We understand your concern with regards your privacy and we fully respect your opinion.  If you have further questions, please do not hesitate to reply to this post. Thank you!  Jack Skype Community Moderator', 'vote': '0', 'utterance_time': '2017-08-03T20:22:37', 'affiliation': 'Microsoft', 'is_answer': 0, 'tags': 'GG'}
+[2019.03.10-23:43:31] Initial number of unique tags 345
+[2019.03.10-23:43:31] Data contains combination of ignored labels: e.g ['GG JK']
+[2019.03.10-23:43:31] Number of this combinations is 54
+[2019.03.10-23:43:31] Number of unique tags after first preprocess step 178
+[2019.03.10-23:43:31] Number of unique tags that made 90.00% of the occurences 36
+[2019.03.10-23:43:31] ['PA', 'OQ', 'PF', 'PA FD', 'FD', 'GG', 'IR PA', 'FD NF', 'FD OQ', 'IR', 'RQ', 'PA IR', 'NF', 'PF FD', 'FQ FD', 'CQ FD', 'FQ', 'PA PF', 'FD RQ', 'CQ IR', 'FQ RQ', 'FD PF', 'CQ PA', 'FQ IR', 'FQ CQ', 'IR FD', 'JK', 'CQ IR PA', 'RQ OQ', 'IR OQ', 'NF OQ', 'FQ FD NF', 'CQ', 'FQ PA', 'FQ PF', 'FQ NF']
+[2019.03.10-23:43:31] Number of unique tags after second preprocess step 37
+[2019.03.10-23:43:31] ['PA', 'OQ', 'PF', 'PA FD', 'FD', 'GG', 'IR PA', 'FD NF', 'FD OQ', 'IR', 'RQ', 'PA IR', 'NF', 'PF FD', 'FQ FD', 'CQ FD', 'FQ', 'PA PF', 'FD RQ', 'CQ IR', 'FQ RQ', 'FD PF', 'CQ PA', 'FQ IR', 'FQ CQ', 'IR FD', 'JK', 'CQ IR PA', 'RQ OQ', 'IR OQ', 'NF OQ', 'FQ FD NF', 'CQ', 'FQ PA', 'FQ PF', 'FQ NF', 'O']
+[2019.03.10-23:43:31] Final tags distribution 
+ [('PA', 2613), ('OQ', 1930), ('FD', 644), ('PF', 629), ('PA FD', 523), ('GG', 362), ('NF', 256), ('RQ', 251), ('IR', 233), ('IR PA', 227), ('FD NF', 198), ('FQ', 196), ('CQ', 170), ('FD OQ', 169), ('PA IR', 144), ('PF FD', 140), ('FQ FD', 137), ('CQ FD', 116), ('PA PF', 98), ('FD RQ', 87), ('CQ IR', 81), ('JK', 74), ('FQ RQ', 71), ('FD PF', 67), ('CQ PA', 62), ('FQ IR', 58), ('FQ CQ', 55), ('IR FD', 54), ('CQ IR PA', 51), ('RQ OQ', 49), ('IR OQ', 48), ('NF OQ', 47), ('FQ FD NF', 44), ('FQ PA', 41), ('FQ PF', 38), ('FQ NF', 38), ('O', 19)]
+[2019.03.10-23:43:31] Read structural features ...
+[2019.03.10-23:43:31] Read sentiment features ...
+[2019.03.10-23:43:31] Read content features ...
+[2019.03.10-23:43:31] Analyze feature importance by using only sentiment features ...
+[2019.03.10-23:43:31] Start training 45% AdaBoost + 55% RandomForest ...
+[2019.03.10-23:44:45] Finished training [74.32s]
+[2019.03.10-23:44:45] Start evaluating on test data ...
+[2019.03.10-23:44:48] Accuracy label based score 0.30064870259481036
+[2019.03.10-23:44:48] Subset accuracy 0.24850299401197604
+[2019.03.10-23:44:48] Recall 0.3175133689839572
+[2019.03.10-23:44:48] Precision 0.31857813547954394
+[2019.03.10-23:44:48] F1 0.3180448610646133
+[2019.03.10-23:44:49] Analyze feature importance by using only content features ...
+[2019.03.10-23:44:49] Start training 45% AdaBoost + 55% RandomForest ...
+[2019.03.10-23:45:58] Finished training [69.20s]
+[2019.03.10-23:45:58] Start evaluating on test data ...
+[2019.03.10-23:46:00] Accuracy label based score 0.4593313373253493
+[2019.03.10-23:46:00] Subset accuracy 0.36427145708582837
+[2019.03.10-23:46:00] Recall 0.516042780748663
+[2019.03.10-23:46:00] Precision 0.5693215339233039
+[2019.03.10-23:46:00] F1 0.541374474053296
+[2019.03.10-23:46:01] Analyze feature importance by using only structural features ...
+[2019.03.10-23:46:01] Start training 45% AdaBoost + 55% RandomForest ...
+[2019.03.10-23:47:01] Finished training [59.49s]
+[2019.03.10-23:47:01] Start evaluating on test data ...
+[2019.03.10-23:47:03] Accuracy label based score 0.5711909514304723
+[2019.03.10-23:47:03] Subset accuracy 0.47005988023952094
+[2019.03.10-23:47:03] Recall 0.6062834224598931
+[2019.03.10-23:47:03] Precision 0.6748511904761905
+[2019.03.10-23:47:03] F1 0.6387323943661972
+[2019.03.10-23:47:04] Analyze feature importance by using only content + structural features ...
+[2019.03.10-23:47:05] Start training 45% AdaBoost + 55% RandomForest ...
+[2019.03.10-23:48:30] Finished training [85.88s]
+[2019.03.10-23:48:30] Start evaluating on test data ...
+[2019.03.10-23:48:33] Accuracy label based score 0.6146041250831671
+[2019.03.10-23:48:33] Subset accuracy 0.5139720558882236
+[2019.03.10-23:48:33] Recall 0.6323529411764706
+[2019.03.10-23:48:33] Precision 0.7396403440187647
+[2019.03.10-23:48:33] F1 0.6818018018018018
+[2019.03.10-23:48:34] Analyze feature importance by using only content + sentiment features ...
+[2019.03.10-23:48:34] Start training 45% AdaBoost + 55% RandomForest ...
+[2019.03.10-23:50:02] Finished training [88.29s]
+[2019.03.10-23:50:02] Start evaluating on test data ...
+[2019.03.10-23:50:04] Accuracy label based score 0.5595475715236193
+[2019.03.10-23:50:04] Subset accuracy 0.4810379241516966
+[2019.03.10-23:50:04] Recall 0.5788770053475936
+[2019.03.10-23:50:04] Precision 0.6900398406374502
+[2019.03.10-23:50:04] F1 0.6295892402762632
+[2019.03.10-23:50:05] Analyze feature importance by using only structural + sentiment features ...
+[2019.03.10-23:50:06] Start training 45% AdaBoost + 55% RandomForest ...
+[2019.03.10-23:51:29] Finished training [82.65s]
+[2019.03.10-23:51:29] Start evaluating on test data ...
+[2019.03.10-23:51:31] Accuracy label based score 0.6215901530272787
+[2019.03.10-23:51:31] Subset accuracy 0.5289421157684631
+[2019.03.10-23:51:31] Recall 0.6296791443850267
+[2019.03.10-23:51:31] Precision 0.7488076311605724
+[2019.03.10-23:51:31] F1 0.6840958605664489
+</pre></BODY>
