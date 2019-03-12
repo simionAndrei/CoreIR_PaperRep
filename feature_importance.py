@@ -145,6 +145,9 @@ class FeatureImportanceAnalyzer():
     adab_feats_scores = model.classifier.estimators_[0].feature_importances_
     randf_feats_score = model.classifier.estimators_[1].feature_importances_
 
+    adab_feats_scores /= adab_feats_scores.max()
+    randf_feats_score /= randf_feats_score.max()
+
     results_df = pd.DataFrame(np.stack([adab_feats_scores, randf_feats_score]), 
       columns = feats_name, index = ["AdaBoost", "RandForest"])
     results_df.index.name = "Estimator"
