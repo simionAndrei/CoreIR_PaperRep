@@ -26,8 +26,8 @@ if __name__ == '__main__':
     feats_df = pd.concat([structural_df, sentiment_df, content_df], axis = 1)
     feats_df['label'] = data_preprocessor.final_tags
     
-    X_train, y_train, X_valid, y_valid, X_test, y_test = get_train_valid_test(
-      feats_df, train_size = 0.8) 
+    X_train, y_train, X_valid, y_valid, X_test, y_test = get_train_test_valid(
+      feats_df, train_size = 0.9) 
 
     logger.log("Split data in train/validation/test: {}/{}/{}".format(
       X_train.shape[0], X_valid.shape[0], X_test.shape[0]))
@@ -40,16 +40,18 @@ if __name__ == '__main__':
       svm_classifier = test_svm(X_train, y_train, X_test, y_test, logger, 
         X_valid, y_valid)
     else:
-      ens_model = test_combiner_svm_randf(X_train, y_train, X_test, y_test, logger)
+      ens_model = test_combiner_ada_randf(X_train, y_train, X_test, y_test, logger)
 
   elif logger.config_dict['MODE'].lower() == "plots":
     make_accuracy_f1_plot("best.csv", "acc_f1.jpg", logger)
     make_tag_occurences_plot(data_preprocessor.occurences_step1, 
       "", "Frequency rank", "Utterance frequency", "occurences_step1.jpg", logger, 
-      vertical_line = 37, color = 'white', edgecolor = 'blue')
+      vertical_line = 37, color = 'blue')
     make_tag_occurences_plot(data_preprocessor.occurences, 
       "", "Utterance tag", "Frequency", "occurences_final.jpg", logger,
       color = 'blue', plot_tags = True, edgecolor = 'black')
+    make_feats_importance_barplot("feats_imp.csv", "feats_imp.jpg", num_feats_to_plot = 10, 
+      logger = logger)
 
   elif logger.config_dict['MODE'].lower() == "feats":
     analyzer = FeatureImportanceAnalyzer(sentiment_df, content_df, structural_df, 
