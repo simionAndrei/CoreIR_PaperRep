@@ -10,7 +10,7 @@ Team members:
 
 ## Data
 
-For training and testing the models, we used the "MSDialog-Intent" dataset that can be obtain by following `Instructions on Getting the Data` from [Center for intelligent information retrieval](https://ciir.cs.umass.edu/downloads/msdialog/).
+For training and testing the models, we used the "MSDialog-Intent" dataset that can be obtained by following the `Instructions on Getting the Data` from the [Center for intelligent information retrieval](https://ciir.cs.umass.edu/downloads/msdialog/).
 
 ## Project structure
 
@@ -18,16 +18,16 @@ The project tree is displayed bellow:
 ```
 root
 │   
-│   main.py
-|   data_preproc.py
-|   features.py
-|   test.py
-|   test_fcn.py
-|   util.py
-|   feature_importance.py
-|   plots.py
-|   logger.py
-|   config.txt
+│   main.py			application entry point
+|   data_preproc.py		performes preprocessing as original paper describes
+|   features.py			computes sentiment, content and structural features
+|   test.py			run hyperparams grid-search on validation and test performance of simple and combined models
+|   test_fcn.py			test performance of fully-connected neural model 96N-Dropout50-48N-12Sigmoid
+|   util.py			utility functions like computing label based accuracy, read features, transform to one-hot a.s.o
+|   feature_importance.py	compute feature importance in Groups (sentiment, content, strcutural and combinations) and individually
+|   plots.py			generate barplots for occurrences tags distribution and Accuracy vs F1 plot
+|   logger.py			logging system for generating folders initial structure and saving application logs to html files  
+|   config.txt			application configuration file 
 |   
 └───data
 │   │   content.csv
@@ -38,13 +38,13 @@ root
 |
 └───logs
 |   |   Log files in HTML format for 
-|   |   	hyperpars search, training and testing simple and ensembles models, compute features importance
+|   |   	hyperpars search, training and testing simple and ensembles models, compute importance of features
 |   └───
 |
 └───models
 │   │   Saved hyperparamaters after randomize grid search for SVM, AdaBoost and RandomForest
 │   |  
-│   │   Saved trainined ensmbled models as pickle files (NOT pushed to GitHub due to space issue) 
+│   │   Saved trained ensmbled models as pickle files (NOT pushed to GitHub due to space issue) 
 │   └───
 |
 └───output
@@ -110,7 +110,7 @@ For creating and setting `keras_gpu` enviroment:
 To run `main.py`, we need to obtain `MSDialog.json` dataset by requesting access following the instruction from [Data section](#data).
 After getting `MSDialog-Intent.json`, copy it in the `data` folder. 
 
-The tests for the machine learning models can be run from `main.py` after setting the desired values to `config.txt` and verify the right method from `test.py` is called in `main.py`:
+The tests for the machine learning models can be run from `main.py` after setting the desired values to `config.txt` and verifying the right method from `test.py` is called in `main.py`:
 ```shell
 (core_ir) python main.py
 ```
