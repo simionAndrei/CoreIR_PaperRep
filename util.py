@@ -26,7 +26,9 @@ def get_one_hot_from_str_labels(str_labels):
 
   atomic_labels_list = [str_label.split() for str_label in str_labels]
   atomic_labels_list = list(itertools.chain.from_iterable(atomic_labels_list))
-  atomic_labels_list = set(atomic_labels_list)
+  atomic_labels_list = np.unique(atomic_labels_list).tolist()
+
+  print(atomic_labels_list)
 
   one_hot_labels = []
   for str_label in str_labels:
@@ -69,7 +71,7 @@ def read_feats(logger):
 
 def get_train_test_valid(data_df, train_size):
 
-  one_hot_labels = get_one_hot_from_str_labels(feats_df.iloc[:, -1].values)
+  one_hot_labels = get_one_hot_from_str_labels(data_df.iloc[:, -1].values)
     
   boolean_dict = {True: 1, False: 0}
   data_df = data_df.replace(boolean_dict)
