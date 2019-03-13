@@ -11,7 +11,9 @@ from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 
-
+'''
+Feature Abstract Class
+'''
 from abc import ABC, abstractmethod
 class AbstractFeatures(ABC):
 
@@ -23,7 +25,9 @@ class AbstractFeatures(ABC):
     pass
 
 
-
+'''
+Class for computing sentiment features
+'''
 class SentimentFeatures(AbstractFeatures):
 
   def __init__(self, logger):
@@ -47,6 +51,9 @@ class SentimentFeatures(AbstractFeatures):
             pos_opinion_count, neg_opinion_count]
 
 
+  '''
+  Public method for getting sentiment features DataFrame
+  '''
   def compute_features(self, dialog_dict):
 
     self.logger.log("Start computing sentiment features...")
@@ -64,7 +71,9 @@ class SentimentFeatures(AbstractFeatures):
     return pd.DataFrame(sentiment_features, columns = colnames)
 
 
-
+'''
+Class for computing structural features
+'''
 class StructuralFeatures(AbstractFeatures):
 
   def __init__(self, logger):
@@ -89,6 +98,9 @@ class StructuralFeatures(AbstractFeatures):
             num_unique_words_after_stemming, is_starter]
 
 
+  '''
+  Public method for getting structural features DataFrame
+  '''
   def compute_features(self, dialog_dict):
 
     self.logger.log("Start computing structural features...")
@@ -109,7 +121,9 @@ class StructuralFeatures(AbstractFeatures):
     return pd.DataFrame(structural_features, columns = colnames)
 
 
-
+'''
+Class for computing content features
+'''
 class ContentFeatures(AbstractFeatures):
 
   def __init__(self, logger):
@@ -124,10 +138,12 @@ class ContentFeatures(AbstractFeatures):
     dialog_part = dialog_part.translate(str.maketrans('','',string.punctuation))
     other_parts = [item for item in all_parts if item != dialog_part]
 
+    # TFID representation utterance + all utterances from the dialog
     vectorizer1 = TfidfVectorizer()
     tfid_all_dialog = vectorizer1.fit_transform(
       [dialog_part] + all_parts)
 
+    # TFID representation utterance + all utterances joined in a single document
     vectorizer2 = TfidfVectorizer()
     tfid_current_rest_joined = vectorizer2.fit_transform(
       [dialog_part, " ".join(other_parts)])
@@ -145,6 +161,9 @@ class ContentFeatures(AbstractFeatures):
             has_question, has_duplicate] + one_hot_5w
 
 
+  '''
+  Public method for getting content features DataFrame
+  '''
   def compute_features(self, dialog_dict):
 
     self.logger.log("Start computing content features...")

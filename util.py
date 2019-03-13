@@ -1,12 +1,16 @@
 from features import StructuralFeatures, SentimentFeatures, ContentFeatures
 
+from sklearn.model_selection import train_test_split
+from scipy.sparse import csr_matrix
+
 import pandas as pd
 import numpy as np
 import itertools
 
-from sklearn.model_selection import train_test_split
-from scipy.sparse import csr_matrix
 
+'''
+Accuracy for multi-label classification aka Intersection Over Union
+'''
 def label_based_accuracy(y_true, y_pred):
   
   accuracies = []
@@ -22,6 +26,9 @@ def label_based_accuracy(y_true, y_pred):
   return np.mean(accuracies)
 
 
+'''
+Computes one-hot representation for each tag from the corpus of all tags 
+'''
 def get_one_hot_from_str_labels(str_labels):
 
   atomic_labels_list = [str_label.split() for str_label in str_labels]
@@ -35,6 +42,9 @@ def get_one_hot_from_str_labels(str_labels):
   return one_hot_labels
 
 
+'''
+Helper for computing and saving to csv files structural, sentiment and content features
+'''
 def compute_feats(msdialog_dict, logger):
 
   structural_feats_extractor = StructuralFeatures(logger)
@@ -55,6 +65,9 @@ def compute_feats(msdialog_dict, logger):
   return structural_df, sentiment_df, content_df
 
 
+'''
+Helper for reading structural, sentiment and content features from csv files
+'''
 def read_feats(logger):
 
   logger.log("Read structural features ...")
@@ -67,6 +80,11 @@ def read_feats(logger):
   return structural_df, sentiment_df, content_df
 
 
+'''
+Helper for getting train, test and validation shuffled arrays from Data Frame
+  train array size is set by train_size in percentage
+  validation and test arrays are equal in size
+'''
 def get_train_test_valid(data_df, train_size):
 
   one_hot_labels = get_one_hot_from_str_labels(data_df.iloc[:, -1].values)
@@ -83,6 +101,3 @@ def get_train_test_valid(data_df, train_size):
     random_state = 13)
 
   return X_train, y_train, X_valid, y_valid, X_test, y_test
-
-
-

@@ -10,24 +10,31 @@ from feature_importance import FeatureImportanceAnalyzer
 
 import pandas as pd
 
+
+'''
+Main entry point
+'''
 if __name__ == '__main__':
   logger = Logger(show = True, html_output = True, config_file = "config.txt")
 
+  # preprocess data
   data_preprocessor = DataPreprocessor(logger.config_dict['DATA_FILE'], logger)
   msdialog_dict = data_preprocessor.get_preprocess_data(0.9)
 
+  # compute or read features
   if logger.config_dict['COMPUTE_FEATS']:
     structural_df, sentiment_df, content_df = compute_feats(msdialog_dict, logger)
   else:
     structural_df, sentiment_df, content_df = read_feats(logger)
-        
+  
+  # perform grid-search and test simple models or test ensemble models      
   if logger.config_dict['MODE'].lower() == "tests":
 
     feats_df = pd.concat([structural_df, sentiment_df, content_df], axis = 1)
     feats_df['label'] = data_preprocessor.final_tags
     
     X_train, y_train, X_valid, y_valid, X_test, y_test = get_train_test_valid(
-      feats_df, train_size = 0.9) 
+      feats_df, train_size = 0.8) 
 
     logger.log("Split data in train/validation/test: {}/{}/{}".format(
       X_train.shape[0], X_valid.shape[0], X_test.shape[0]))
@@ -42,6 +49,7 @@ if __name__ == '__main__':
     else:
       ens_model = test_combiner_ada_randf(X_train, y_train, X_test, y_test, logger)
 
+  # make plots
   elif logger.config_dict['MODE'].lower() == "plots":
     make_accuracy_f1_plot("best.csv", "acc_f1.jpg", logger)
     make_tag_occurences_plot(data_preprocessor.occurences_step1, 
@@ -53,6 +61,7 @@ if __name__ == '__main__':
     make_feats_importance_barplot("feats_imp.csv", "feats_imp.jpg", num_feats_to_plot = 10, 
       logger = logger)
 
+  # compute feature importance
   elif logger.config_dict['MODE'].lower() == "feats":
     analyzer = FeatureImportanceAnalyzer(sentiment_df, content_df, structural_df, 
       data_preprocessor.final_tags, logger)

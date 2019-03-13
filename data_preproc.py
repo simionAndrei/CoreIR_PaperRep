@@ -6,6 +6,10 @@ import random
 import re
 
 
+'''
+Class for preprocessing MSDialog Intent Utterances Datataset
+
+'''
 class DataPreprocessor():
 
   def __init__(self, data_filename, logger):
@@ -14,11 +18,19 @@ class DataPreprocessor():
     self._read_data()
     self._compute_stats()
 
+
+  '''
+  Read MSDialogIntent.json file
+  '''
   def _read_data(self):
     with open(self.logger.get_data_file(self.data_filename)) as fp:
       self.msdialog_dict = json.load(fp)
     self.logger.log("Finished read data from {}".format(self.data_filename), show_time = True)
 
+
+  '''
+  Stores ignored labels and each combination of 2 ignored labels
+  '''
   def _compute_ignored_tags(self):
     self.ignored_labels = ['GG', 'JK', 'O']
     self.ignored_combinations  = [item[0] + ' ' + item[1] for item in itertools.combinations(
@@ -27,6 +39,9 @@ class DataPreprocessor():
       self.ignored_labels, 2)]
 
 
+  '''
+  Compute number of dialogs and total number of utterances
+  '''
   def _compute_stats(self):
     self.logger.log("Number of dialogs {}".format(
       np.unique(list(self.msdialog_dict.keys())).shape[0]))
@@ -37,7 +52,9 @@ class DataPreprocessor():
     self.logger.log("Randomly selected final utterance {}".format(
       self.msdialog_dict[np.random.choice(list(self.msdialog_dict.keys()))]['utterances'][-1]))
 
-
+  '''
+  Computes initial tags distribution
+  '''
   def _compute_initial_tags(self):
     self.initial_tags = []
     for item in self.msdialog_dict.values():
@@ -47,6 +64,12 @@ class DataPreprocessor():
     self.logger.log("Initial number of unique tags {}".format(len(set(self.initial_tags))))
 
 
+  '''
+  Remove each ignored label from the tag only if the tag ontains another label
+  GG+OQ -> OQ
+  GG+JK -> unmodified
+  GG -> unmodified
+  '''
   def _change_tags_remove_irrelevant(self):
 
     if set(self.initial_tags) & set(self.ignored_combinations):
@@ -58,6 +81,7 @@ class DataPreprocessor():
       self.logger.log("Number of this combinations is {}".format(
         num_occurences_ignored_combinations))
 
+    # regex for replacing ignored labels as words
     replace_regex = re.compile(r'\b%s\b' % r'\b|\b'.join(map(re.escape, self.ignored_labels)))
     dialog_ids = list(self.msdialog_dict.keys())
     for item_key in dialog_ids:
@@ -75,6 +99,10 @@ class DataPreprocessor():
       len(set(self.tags_after_step1))))
 
 
+  '''
+  Change tags by replacing rare tags with only one randomly selected label 
+  for the (1-N)% less frequent tags
+  '''
   def _change_tags_remove_rare(self):
 
     self.selected_tags.append('O')
@@ -94,6 +122,9 @@ class DataPreprocessor():
     self.logger.log("{}".format(self.selected_tags))
 
 
+  '''
+  Compute the most frequent tags that made N% of the total number of occurences
+  '''
   def _select_topNp_tags(self, n):
     occurences = dict(Counter(self.tags_after_step1)).items()
     self.occurences_step1 = sorted(occurences, key=lambda tup: tup[1], reverse = True)
@@ -109,6 +140,9 @@ class DataPreprocessor():
     self.logger.log("{}".format(self.selected_tags))
 
 
+  '''
+  Public method for getting preprocessed data based on the selected topNp% occurences
+  '''
   def get_preprocess_data(self, topNp):
 
     np.random.seed(0)

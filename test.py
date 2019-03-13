@@ -14,6 +14,10 @@ import json
 import pickle
 
 
+'''
+Generic function for performing hyperparmas randomize grid search based on validation data
+  and for testing a simple model performance with the selected hyperparams on testing data
+'''
 def test_model(X_train, y_train, X_test, y_test, logger, base_estimator, hyperparams_grid, 
   X_valid = None, y_valid = None):
 
@@ -37,6 +41,7 @@ def test_model(X_train, y_train, X_test, y_test, logger, base_estimator, hyperpa
     params_filename = type(base_estimator).__name__ + "_params_" + logger.get_time_prefix()
     params_filename += ".json"
 
+    # remove classifier__ prefix needed for ClassifierChain when saving hyperparams
     old_keys = list(best_params.keys())
     for key in old_keys:
       best_params[key.replace("classifier__", "")] = best_params.pop(key)
@@ -65,6 +70,9 @@ def test_model(X_train, y_train, X_test, y_test, logger, base_estimator, hyperpa
   return classifier
 
 
+'''
+Method for hyperparams grid search and testing performance using SVM
+'''
 def test_svm(X_train, y_train, X_test, y_test, logger, 
   X_valid = None, y_valid = None):
 
@@ -83,6 +91,9 @@ def test_svm(X_train, y_train, X_test, y_test, logger,
   return classifier
 
 
+'''
+Method for hyperparams grid search and testing performance using Random Forest
+'''
 def test_random_forest(X_train, y_train, X_test, y_test, logger, 
   X_valid = None, y_valid = None):
 
@@ -108,6 +119,9 @@ def test_random_forest(X_train, y_train, X_test, y_test, logger,
   return classifier
 
 
+'''
+Method for hyperparams grid search and testing performance using Ada Boost
+'''
 def test_ada_boost(X_train, y_train, X_test, y_test, logger, 
   X_valid = None, y_valid = None):
 
@@ -139,6 +153,9 @@ def test_ada_boost(X_train, y_train, X_test, y_test, logger,
   return classifier
 
 
+'''
+Method for SVM + AdaBoost soft voting ensemble using weights defined in config
+'''
 def test_combiner_svm_ada(X_train, y_train, X_test, y_test, logger):
 
   with open(logger.get_model_file(logger.config_dict['BEST_SVM']), 'r') as fp:
@@ -180,6 +197,9 @@ def test_combiner_svm_ada(X_train, y_train, X_test, y_test, logger):
   return ensemble_model
 
 
+'''
+Method for SVM + Random Forest soft voting ensemble using weights defined in config
+'''
 def test_combiner_svm_randf(X_train, y_train, X_test, y_test, logger):
 
   with open(logger.get_model_file(logger.config_dict['BEST_SVM']), 'r') as fp:
@@ -221,6 +241,9 @@ def test_combiner_svm_randf(X_train, y_train, X_test, y_test, logger):
   return ensemble_model
 
 
+'''
+Method for Ada Boost + Random Forest soft voting ensemble using weights defined in config
+'''
 def test_combiner_ada_randf(X_train, y_train, X_test, y_test, logger):
 
   with open(logger.get_model_file(logger.config_dict['BEST_ADA']), 'r') as fp:

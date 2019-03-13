@@ -14,6 +14,10 @@ import pandas as pd
 import numpy as np
 import json
 
+
+'''
+Class for computing group and individual feature importance
+'''
 class FeatureImportanceAnalyzer():
 
   def __init__(self, sentiment_df, content_df, structural_df, labels, logger):
@@ -25,11 +29,13 @@ class FeatureImportanceAnalyzer():
     self.current_df = None
     self.best_model = "45% AdaBoost + 55% RandomForest"
 
+
   def _load_models_hyperparams(self):
     with open(self.logger.get_model_file(self.logger.config_dict['BEST_ADA']), 'r') as fp:
       self.adab_hyperparams = json.load(fp)
     with open(self.logger.get_model_file(self.logger.config_dict['BEST_RANDF']), 'r') as fp:
       self.randf_hyperparams = json.load(fp)
+
 
   def _split_data(self):
 
@@ -92,6 +98,9 @@ class FeatureImportanceAnalyzer():
     self._evaluate_model(y_test.toarray(), y_pred.toarray())
 
 
+  '''
+  Public method for computing sentiment features importance
+  '''
   def analyze_sentiment(self):
 
     self.logger.log("Analyze feature importance by using only sentiment features ...")
@@ -99,6 +108,9 @@ class FeatureImportanceAnalyzer():
     self._evaluate_feature_set()
 
 
+  '''
+  Public method for computing content features importance
+  '''
   def analyze_content(self):
     
     self.logger.log("Analyze feature importance by using only content features ...")
@@ -106,6 +118,9 @@ class FeatureImportanceAnalyzer():
     self._evaluate_feature_set()
 
 
+  '''
+  Public method for computing structural features importance
+  '''
   def analyze_structural(self):
     
     self.logger.log("Analyze feature importance by using only structural features ...")
@@ -113,6 +128,10 @@ class FeatureImportanceAnalyzer():
     self._evaluate_feature_set()
 
 
+  '''
+  Public method for computing group combinations importance:
+  content + structural, content + sentiment, structural + sentiment
+  '''
   def analyze_combinations(self):
 
     self.logger.log("Analyze feature importance by using only content + structural features ...")
@@ -128,6 +147,10 @@ class FeatureImportanceAnalyzer():
     self._evaluate_feature_set()
 
 
+  '''
+  Public method for computing relative individual features importance for each classifier 
+  from the voting ensemble model
+  '''
   def analyze_individual_importance(self):
 
     self.logger.log("Analyze individual features importance ...")
@@ -145,6 +168,7 @@ class FeatureImportanceAnalyzer():
     adab_feats_scores = model.classifier.estimators_[0].feature_importances_
     randf_feats_score = model.classifier.estimators_[1].feature_importances_
 
+    # compute relative feature importance score
     adab_feats_scores /= adab_feats_scores.max()
     randf_feats_score /= randf_feats_score.max()
 

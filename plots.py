@@ -8,6 +8,10 @@ plt.rc('font', weight='bold')
 plt.rc('axes', labelweight='bold')
 plt.rcParams.update({'font.size': 16})
 
+
+'''
+Method to make tags occurences barplot with/without displaying tags as axes ticks
+'''
 def make_tag_occurences_plot(occurences, plt_title, x_label, y_label, filename, logger, 
   plot_tags = False, vertical_line = None, color = 'blue', edgecolor = None, log = False):
 
@@ -22,6 +26,7 @@ def make_tag_occurences_plot(occurences, plt_title, x_label, y_label, filename, 
     plt.bar(range(len(occurences)), [item[1] for item in occurences], width = 0.9, 
       color = color, edgecolor = edgecolor, log = log)
   else:
+    # plot both normal and log version of plot
     gs = gridspec.GridSpec(1, 2, width_ratios=[1, 4]) 
     ax0 = plt.subplot(gs[0])
     ax0.bar(range(len(occurences)), [item[1] for item in occurences], width = 0.9, 
@@ -50,6 +55,9 @@ def make_tag_occurences_plot(occurences, plt_title, x_label, y_label, filename, 
   plt.close()
 
 
+'''
+Method to plot displaying accuracy and F1 for a list of classifiers
+'''
 def make_accuracy_f1_plot(results_filename, plot_filename, logger):
 
   fig = plt.figure(figsize=(7, 7))
@@ -79,6 +87,9 @@ def make_accuracy_f1_plot(results_filename, plot_filename, logger):
   plt.close()
 
 
+'''
+Method to make barplot of relative feature importance scores for each classifier in the ensemble
+'''
 def make_feats_importance_barplot(feats_imp_filename, plot_filename, 
   num_feats_to_plot, logger):
 
@@ -98,6 +109,7 @@ def make_feats_importance_barplot(feats_imp_filename, plot_filename,
 
   model2_names, model2_scores = zip(*model2_name_score_pairs)
  
+  # ordered by model2 (RandForest) feature importance
   model1_scores = [dict(model1_name_score_pairs)[name] for name in model2_names]
 
   model2_names = model2_names[:num_feats_to_plot]
