@@ -28,8 +28,6 @@ def get_one_hot_from_str_labels(str_labels):
   atomic_labels_list = list(itertools.chain.from_iterable(atomic_labels_list))
   atomic_labels_list = np.unique(atomic_labels_list).tolist()
 
-  print(atomic_labels_list)
-
   one_hot_labels = []
   for str_label in str_labels:
     one_hot_labels.append([1 if tag in str_label else 0 for tag in atomic_labels_list])

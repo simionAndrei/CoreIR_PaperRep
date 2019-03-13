@@ -52,7 +52,7 @@ def make_tag_occurences_plot(occurences, plt_title, x_label, y_label, filename, 
 
 def make_accuracy_f1_plot(results_filename, plot_filename, logger):
 
-  fig = plt.figure(figsize=(6, 6))
+  fig = plt.figure(figsize=(7, 7))
   sns.set()
 
   results_df = pd.read_csv(logger.get_output_file(results_filename))
@@ -68,9 +68,12 @@ def make_accuracy_f1_plot(results_filename, plot_filename, logger):
     y = f1[i]
     plt.scatter(x, y, marker = markers[i], color = colors[i], label = str(model), s = [80])
 
-  plt.xlabel("Accuracy")
-  plt.ylabel("F1")
-  plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), fancybox=True, shadow=True)
+  plt.xlabel("Accuracy", fontsize = 16)
+  plt.ylabel("F1", fontsize = 16)
+  plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), 
+    fancybox=True, shadow=True, fontsize = 15)
+  plt.xticks(fontsize = 13)
+  plt.yticks(fontsize = 13)
 
   plt.savefig(logger.get_output_file(plot_filename), dpi = 120,  bbox_inches='tight')
   plt.close()
@@ -112,7 +115,7 @@ def make_feats_importance_barplot(feats_imp_filename, plot_filename,
   plt.bar(x_range + 0.4, model1_scores, width = 0.4, color = 'blue')
   
   plt.legend(["Randon Forest", "Ada Boost"], fontsize = 16)
-  plt.savefig(logger.get_output_file(plot_filename), dpi = 120, bbox_inches='tight')
+  plt.savefig(logger.get_output_file(plot_filename), dpi = 120, fontsize = 16, bbox_inches='tight')
   plt.close()
 
 

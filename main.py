@@ -3,7 +3,7 @@ from logger import Logger
 
 from test import test_svm, test_random_forest, test_ada_boost
 from test import test_combiner_svm_randf, test_combiner_ada_randf, test_combiner_svm_ada
-from plots import make_tag_occurences_plot, make_accuracy_f1_plot
+from plots import make_tag_occurences_plot, make_accuracy_f1_plot, make_feats_importance_barplot
 from util import get_train_test_valid, read_feats, compute_feats
 
 from feature_importance import FeatureImportanceAnalyzer

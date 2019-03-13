@@ -89,7 +89,7 @@ def test_random_forest(X_train, y_train, X_test, y_test, logger,
   base_estimator = RandomForestClassifier()
 
   n_estimators = [int(x) for x in np.linspace(start = 200, stop = 2000, num = 10)]
-  max_features = ['auto', 'sqrt']
+  max_features = ['log2', 'sqrt', None]
   max_depth = [int(x) for x in np.linspace(10, 110, num = 11)]
   max_depth.append(None)
   min_samples_split = [2, 5, 10]
